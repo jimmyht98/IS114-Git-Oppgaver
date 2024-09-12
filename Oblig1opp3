@@ -1,0 +1,66 @@
+include shared-gdrive("dcic-2021", "1wyQZj_L0qqV9Ekgr9au6RX2iqt2Ga8Ep") #importerer Google Spreadsheets
+include gdrive-sheets
+include data-source 
+
+ssid = "1RYN0i4Zx_UETVuYacgaGfnFcv4l9zd9toQTTdkQkj7g"
+datatable = load-table: id, first-Name, last-Name, e-Mail, gender, iP-Address, age
+  source: load-spreadsheet(ssid).sheet-by-name("o1-oppg3", true)
+end
+
+#Oppgave A
+
+listNameAge = [list: "first-Name", "last-Name", "age"]
+
+fun filterAge-to-old-to-young():
+  test = filter-with(datatable, lam(r): (r["age"] >= 30) and (r["age"] <= 80)end)
+  filterdata = filter-with.select-columns(listNameAge)
+  oldtoYoung = order test:
+    age descending
+  end
+  oldtoYoung
+where:
+  filterAge-to-old-to-young(datatable).length() is 6
+end
+
+#Oppgave B
+
+listName-Age-Mail = [list: "first-Name", "last-Name", "e-Mail", "age"]
+
+fun filter-name-age-mail(x): #Filtrer navn, alder og e-mail
+  doc: "Returner fullt navn og e-mail til den eldste eller yngste personen"
+  
+  if x == 0:
+    youngestFirst = order datatable: 
+      age ascending #Funksjon for å returnere output til den yngste
+    end
+    youngestFilter = youngestFirst.select-columns(listName-Age-Mail)
+    youngestFilter.row-n(0)
+  else if x == 1:
+    "temp"
+  end
+where:
+  filter-name-age-mail() is 0
+end
+
+#Oppgave C
+
+listAge = [list: "age"]
+
+fun averAge():
+  doc: "Returner gjennomsnittsalder til alle personene"
+  
+  mean(datatable, "age")
+where:
+  averAge() is 55.9
+end
+
+#Oppgave D
+
+listName-Age = [list: "first-Name", "last-Name", "age"]
+
+fun barchart():
+  doc: "Etabler en barchart"
+  
+  filter-bar = build-column(datatable, "full-Name", lam(r): (r["first-Name"]) + (r["last-Name"]) end)
+  bar-chart(filter-bar, "full-Name", "age") #x-akse = full-Name, y-akse = age
+end
