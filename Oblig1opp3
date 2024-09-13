@@ -11,15 +11,14 @@ end
 
 listNameAge = [list: "first-Name", "last-Name", "age"]
 
-fun filterAge-to-old-to-young():
+fun filterAge():
   test = filter-with(datatable, lam(r): (r["age"] >= 30) and (r["age"] <= 80)end)
-  filterdata = filter-with.select-columns(listNameAge)
   oldtoYoung = order test:
-    age descending
+    age descending #Funksjon for å returnere output til den eldste
   end
   oldtoYoung
 where:
-  filterAge-to-old-to-young(datatable).length() is 6
+  filterAge(datatable).length() is 1
 end
 
 #Oppgave B
@@ -35,11 +34,16 @@ fun filter-name-age-mail(x): #Filtrer navn, alder og e-mail
     end
     youngestFilter = youngestFirst.select-columns(listName-Age-Mail)
     youngestFilter.row-n(0)
+    
   else if x == 1:
-    "temp"
+    oldestFirst = order datatable:
+      age descending #Funksjon for å returnere output til den eldste
+    end
+    oldestFilter = oldestFirst.select-columns(listName-Age-Mail)
+    oldestFilter.row-n(1)
   end
 where:
-  filter-name-age-mail() is 0
+  filter-name-age-mail() is 0 == 1
 end
 
 #Oppgave C
