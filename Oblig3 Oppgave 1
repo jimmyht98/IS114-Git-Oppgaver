@@ -1,0 +1,224 @@
+"Oppgave 1A"
+
+def my_str_len(lst): #Bruker Python sin liste "lst"
+    if not lst: #Sjekker om det er tom liste 
+        return []
+    else:
+        return [len(lst[0])] + my_str_len(lst[1:]) #Rekursiv fremkalling for alle lister
+
+linked_lst = ["abc", "123", "justinBieber", "Vatikanstaten"]
+print(my_str_len(linked_lst))
+
+number_lst = [0, 3, 5, 8, 1] 
+
+def my_max(lst): 
+    if not lst:
+        raise ValueError("ikke definert for tom liste")
+    elif len (lst) == 1:
+        return lst[0] #dersom list har én element, returner lst[0]
+    else:
+        return max(lst[0], my_max(lst[1:])) #returner den høyeste lst verdien 
+
+print(my_max(number_lst)) #i dette tilfellet er 8 angitt i høyest lst verdi
+
+"Oppgave 1B"
+
+class Student: #en klasse som representerer studenter
+    def __init__(self, name, group): #navn på studenten og gruppenr
+        self.name = name
+        self.group = group
+    
+def main_student(): #mock data (navn og gruppenr)
+    Justin = Student("Justin", 1)
+    Nicki = Student("Nicki", 2)
+    Bob = Student("Bob", 3)
+    Diddy = Student("Diddy", 4)
+    Iggy = Student("Iggy", 5)
+    return Justin, Nicki, Bob, Diddy, Iggy
+
+def find_group_for_student(student, student_group_mapping): #funksjon for å finne gruppen til en gitt student
+    return student_group_mapping.get(student, "Student not found") #dersom en student ikke finnes i listen returner output
+
+student1, student2, student3, student4, student5 = main_student() #gruppér studenter i sine respektive grupper
+
+student_group_mapping = {
+    student1: "1",
+    student2: "2",
+    student3: "3",
+    student4: "4",
+    student5: "5", 
+}
+
+print(find_group_for_student(student1, student_group_mapping)) #gruppe 1
+print(find_group_for_student(student4, student_group_mapping)) #gruppe 4
+print(find_group_for_student(Student("Speed", 6), student_group_mapping)) #Student not found
+
+"Oppgave 1C"
+#Exercise 9.1.1
+
+"""
+Konverter 'moon-weight' funksjonen fra Pyret til Python:
+
+fun moon-weight(earth-weight :: Number) -> Number
+    doc: "Compute weight on moon from weight on earth"
+    earth-weight * 1/6
+end
+
+"""
+
+'Python code'
+def moon_weight(earth_weight):
+    return earth_weight * (1 / 6) 
+
+earth_weight = 5972 #jordens vekt i kg
+print(moon_weight(earth_weight)) #returner månens vekt
+
+#Exercise 9.1.6.1
+
+"""
+Praktiser Pythons list-funksjoner ved å skrive uttrykker for følgende problemer
+av kun bruk av disse funksjonene:
+
+A. Gitt en liste av nummer, konverter til list av strings "pos", "neg", "zero",
+basert på symbolene av hvert nummer
+
+B. Gitt en liste av strings, finn lengden av hvilke som helst strings er lik 5
+
+C. Gitt en liste av nummer, produser en liste av partall mellom 10 og 20 fra denne listen
+
+"""
+
+'A'
+
+numbers = [0, -2, 5, 11, -8, 9] #input for zero, neg og pos
+
+def sign_Number(n): #funksjon for å klassifisere tegn av et nummer
+    'Avgjører (n) om det er positiv, negativ eller zero (null)'
+    if n > 0:
+        return "pos"
+    elif n < 0:
+        return "neg"
+    else:
+        return "zero"
+
+signs = list(map(sign_Number, numbers)) #bruk map til å iverksette funksjonen for hvert nummer i listen
+print(signs) #returner 'pos', 'neg', 'zero' i respektive nummer
+
+'B'
+
+drink_name = ["Cola", "Fanta", "Sprite", "Monster", "Bulmers"]
+
+length_5 = list(filter(lambda drink_name: len(drink_name) == 5, drink_name)) #brukte 's' med en lambda til å avgjøre om gitt string i lengden har 5
+print(length_5)
+
+
+'C'
+
+par_tall = [2, 4, 6, 10, 14, 16, 20, 18, 8]
+
+par_tall_10_20 = list(filter(lambda n: 10 <= n <= 20 and n % 2 == 0, par_tall)) #bruk filter til å beholde partall mellom 10 og 20
+print(par_tall_10_20) #returner partall mellom 10 og 20
+
+#Exercise 9.1.8.2
+
+'1'
+
+def all_z_words(wordlist: list[str]) -> list[str]:
+    """Produser en liste av ord fra input som inneholder 'z'."""
+    zlist: list[str] = []  #annoter zlist som en liste of strings
+    for wd in wordlist:
+        if "z" in wd:
+            zlist = [wd] + zlist  #prepend the word to the list
+    return zlist
+
+#test cases for all_z_words
+def test_all_z_words():
+    # Test 1: Liste med flere 'z' ord
+    assert all_z_words(["zuckerberg", "zoey", "dog", "cat", "pizza"]) == ["zoey", "pizza", "zuckerberg"], \
+        "Test 1 Failed"
+    
+    # Test 2: Liste med ingen ord som inneholder 'z'
+    assert all_z_words(["dog", "cat", "mouse"]) == [], \
+        "Test 2 Failed"
+
+    # Test 3: Ord med Z og uten Z
+    assert all_z_words(["douchebag", "zen", "zinc", "quiz", "boujee"]) == ["quiz", "zen", "zinc"], \
+        "Test 3 Failed"
+    
+    # Test 4: tom liste
+    assert all_z_words([]) == [], \
+        "Test 4 Failed"
+
+    print("All tests passed!")
+    
+'2'
+
+def all_z_words_filtered(wordlist: list[str]) -> list[str]:
+    return list(filter(lambda wd: 'z' in wd, wordlist))
+
+#test cases for all_z_words, filtered data
+assert all_z_words_filtered(["zuckerberg", "zoey", "dog", "cat", "pizza"]) == ["zuckerberg", "zoey", "pizza"], \
+    "Test 1 Failed"
+
+# Test 2: Liste med ingen ord som inneholder 'z'
+assert all_z_words_filtered(["dog", "cat", "mouse"]) == [], \
+    "Test 2 Failed"
+
+# Test 3: Ord med Z og uten Z
+assert all_z_words_filtered(["douchebag", "zen", "zinc", "quiz", "boujee"]) == ["zen", "zinc", "quiz"], \
+    "Test 3 Failed"
+
+# Test 4: Tom liste
+assert all_z_words_filtered([]) == [], \
+    "Test 4 Failed"
+
+print("All tests passed!")
+
+'3'
+
+"""
+Forskjellen på 1 og 2 er at på 1 ble det benyttet en liste med loop funksjon som reverserer rekkefølgen av
+ord, hvor test outputen for ["zuckerberg", "zoey", "pizza"] ble reversert til ["pizza", "zoey", "zuckerberg"].
+Mens på 2 er ordene filtrert hvor ord er lagt i kronologisk rekkefølge, der outputen for ["zuckerberg, "zoey",
+"pizza"] ble akkurat samme rekkefølge.
+
+Med andre ord er versjon 1 i reversert rekkefølge, og versjon 2 opprettholder kronologisk rekkefølge.
+
+"""
+
+
+#Exercise 9.2.2
+
+"""
+Lag en dictionary som grupperer navn av klasserom eller møterom til setenummer de har.
+
+1. Observer hvor mange seter det er i et spesifikt rom
+
+2. Forandre på kapasitet av et spesifikt rom til å ha 10 ekstra seter enn opprinnelig
+
+3. Finne alle rom som kan få plass til 50 elever
+
+"""
+
+'1'
+
+rooms = dict(Room_A=25, Room_B=43, Room_C=55, Room_D=60, Room_E=20, Room_F=66) #lagde en dictionary ved å benytte dict
+
+room_name = "Room_B" #representerer antall seter i hvert rom
+seats_in_room = rooms.get(room_name, "Room not found")
+print(f"{room_name} has {seats_in_room} seats.") #returner seter i rom B
+
+'2'
+
+room_name = "Room_A"
+if room_name in rooms:
+    rooms[room_name] += 10 #Rom A får 10 i seteøkning
+    print(f"{room_name} now has {rooms[room_name]} seats.")
+else:
+    print(f"{room_name} not found.") #returner 35 seter istedenfor 25 som var opprinnelig verdi
+    
+'3'
+
+big_rooms = filter(lambda room: rooms[room] >= 50, rooms) #filtrerer rom som har plass til 50 elever
+print(f"Rooms that can seat at least 50 students: {list(big_rooms)}") #returner flere rom med plass til 50 elever
+
