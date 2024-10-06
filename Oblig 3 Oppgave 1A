@@ -1,0 +1,22 @@
+"Oppgave 1A"
+
+def my_str_len(lst): #Bruker Python sin liste "lst"
+    if not lst: #Sjekker om det er tom liste 
+        return []
+    else:
+        return [len(lst[0])] + my_str_len(lst[1:]) #Rekursiv fremkalling for alle lister
+
+linked_lst = ["abc", "123", "justinBieber", "Vatikanstaten"]
+print(my_str_len(linked_lst))
+
+number_lst = [0, 3, 5, 8, 1] 
+
+def my_max(lst): 
+    if not lst:
+        raise ValueError("ikke definert for tom liste")
+    elif len (lst) == 1:
+        return lst[0] #dersom list har én element, returner lst[0]
+    else:
+        return max(lst[0], my_max(lst[1:])) #returner den høyeste lst verdien 
+
+print(my_max(number_lst)) #i dette tilfellet er 8 angitt i høyest lst verdi
