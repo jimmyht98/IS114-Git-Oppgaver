@@ -1,0 +1,34 @@
+#Oppgave 1B
+
+data Student:
+    student(name :: String, group :: String)
+end
+
+#mock data
+student1 = student("Justin Bieber", "group 1")
+student2 = student("Nicki Minaj", "group 2")
+student3 = student("Bob Kåre", "group 3")
+student4 = student("P.Diddy", "group 4")
+student5 = student("Iggy Azeala", "group 5")
+
+student-list = [list: student1, student2, student3, student4, student5]
+
+
+#funksjon for å finne hvilken gruppe en student tilhører
+fun find-group-for-student(student-Name :: String, students :: List<Student>) -> String:
+  doc: "Input for studentnavn og liste av studenter som blir returnert hvilken gruppe en student tilhører"
+  
+  cases (List) students:
+    | empty => raise("Student not found: " + student-Name)
+    | link(f, r) =>
+      if f.name == student-Name: #hvis navnet er i listen
+        f.group #returner studentens gruppe
+      else: 
+        find-group-for-student(student-Name, r) #sjekker neste student i listen
+      end
+  end
+end
+
+find-group-for-student("Justin Bieber", student-list) #gruppe 1
+find-group-for-student("P.Diddy", student-list) #gruppe 4
+find-group-for-student("Speed Speedy", student-list) #Student ikke funnet
