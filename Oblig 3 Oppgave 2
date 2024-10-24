@@ -1,0 +1,181 @@
+'Oppgave 2A'
+
+# Fjern rader der nøkkelkolonnen 'Kommuner med barn 1-2 år i bhg' er NaN eller inneholder unødvendig tekst
+bhg_cleaned = bhg.dropna(subset=['Kommuner med barn 1-2 år i bhg'])
+
+# Fjern rader som inneholder irrelevant data i kolonnen 'Kommuner med barn 1-2 år i bhg'
+# Eksempel: Fjerner rader som inneholder 'Database', 'Ekstern PRODUKSJON', 'Intern referansekode' og andre som 'NaN'
+bhg_cleaned = bhg_cleaned[~bhg_cleaned['Kommuner med barn 1-2 år i bhg'].str.contains('Database|Ekstern PRODUKSJON|Intern referansekode|NaN', na=False)]
+
+# Fjern rader der 'Kommuner med barn 1-2 år i bhg' kan være numerisk (disse er sannsynligvis uønskede)
+bhg_cleaned = bhg_cleaned[~bhg_cleaned['Kommuner med barn 1-2 år i bhg'].str.isnumeric()]
+
+# Tilbakestill indeksen for å unngå hull i radnummer etter fjerning av rader
+bhg_cleaned.reset_index(drop=True, inplace=True)
+
+# Fjern alle rader der kolonnene inneholder duplisert årsinformasjon (som '2015' i en rad)
+bhg_cleaned = bhg_cleaned[bhg_cleaned['Kommuner med barn 1-2 år i bhg'] != '2015']
+
+# Konverter alle prosentkolonner fra flyttall til én desimal
+prosentkolonner = ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023']
+bhg_cleaned[prosentkolonner] = bhg_cleaned[prosentkolonner].apply(lambda x: x.round(1))
+
+# Fjern rader der alle år har NaN eller irrelevante verdier dersom de finnes
+bhg_cleaned = bhg_cleaned.dropna(how='all', subset=prosentkolonner)
+
+# Sorter etter den høyeste prosenten av kommunen
+bhg_sorted = bhg_cleaned.sort_values(by='2023', ascending=False)
+
+# Vis den rensede og sorterte tabellen
+bhg_sorted
+
+'Oppgave 2B'
+
+# Fjern rader der nøkkelkolonnen 'Kommuner med barn 1-2 år i bhg' er NaN eller inneholder unødvendig tekst
+bhg_cleaned = bhg.dropna(subset=['Kommuner med barn 1-2 år i bhg'])
+
+# Fjern rader som inneholder irrelevant data i kolonnen 'Kommuner med barn 1-2 år i bhg'
+# Eksempel: Fjerner rader som inneholder 'Database', 'Ekstern PRODUKSJON', 'Intern referansekode' og andre som 'NaN'
+bhg_cleaned = bhg_cleaned[~bhg_cleaned['Kommuner med barn 1-2 år i bhg'].str.contains('Database|Ekstern PRODUKSJON|Intern referansekode|NaN', na=False)]
+
+# Fjern rader der 'Kommuner med barn 1-2 år i bhg' kan være numerisk (disse er sannsynligvis uønskede)
+bhg_cleaned = bhg_cleaned[~bhg_cleaned['Kommuner med barn 1-2 år i bhg'].str.isnumeric()]
+
+# Tilbakestill indeksen for å unngå hull i radnummer etter fjerning av rader
+bhg_cleaned.reset_index(drop=True, inplace=True)
+
+# Fjern alle rader der kolonnene inneholder duplisert årsinformasjon (som '2015' i en rad)
+bhg_cleaned = bhg_cleaned[bhg_cleaned['Kommuner med barn 1-2 år i bhg'] != '2015']
+
+# Konverter alle prosentkolonner fra flyttall til én desimal
+prosentkolonner = ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023']
+bhg_cleaned[prosentkolonner] = bhg_cleaned[prosentkolonner].apply(lambda x: x.round(1))
+
+# Fjern rader der alle år har NaN eller irrelevante verdier dersom de finnes
+bhg_cleaned = bhg_cleaned.dropna(how='all', subset=prosentkolonner)
+
+# Sorter etter den laveste prosenten av kommunen
+bhg_sorted = bhg_cleaned.sort_values(by='2023', ascending=True)
+
+# Vis den rensede og sorterte tabellen
+bhg_sorted
+
+'Oppgave 2C'
+
+# Last opp CSV.fil med riktig kodeformat
+bhg = pd.read_csv('KOSandel120000.csv', delimiter=';', skiprows=3, encoding='latin1')
+
+# Fjerner NaN verdier i hver kolonne
+bhg.dropna(axis=1, how='all', inplace=True)
+
+# Fjerner irrelevante verdier i hver rad
+bhg.dropna(axis=0, how='all', inplace=True)
+
+# Angi den første kolonnen som indeks (kommune)
+bhg.set_index(bhg.columns[0], inplace=True)
+
+# Erstatt kommaer med dotter for konvertering av desimal
+bhg = bhg.replace(',', '.', regex=True)
+
+# Konverter alle kolonner til numeriske tall, og tvinger feil til NaN
+bhg = bhg.apply(lambda x: pd.to_numeric(x, errors='coerce'))
+
+# Filtrere ut urealistiske verdier
+bhg = bhg[bhg <= 100]
+
+# Kalkuler gjennomsnittsprosent til alle kommuner fra 2015-2023
+mean_percentage = bhg.mean(axis=1)
+
+#Rund opp til en desimal
+highest_mean_region = mean_percentage.idxmax()
+highest_mean_value = round(mean_percentage.max(), 1)
+
+# Print ut resultat
+print(f"Kommunen med høyest gjennomsnittlig andel barn i alderen 1-2 år i barnehage fra 2015 til 2023 er {highest_mean_region} med et gjennomsnitt på {highest_mean_value:.1f}%.")
+
+'Oppgave 2D'
+
+# Last opp CSV.fil med riktig kodeformat
+bhg = pd.read_csv('KOSandel120000.csv', delimiter=';', skiprows=3, encoding='latin1')
+
+# Fjerner NaN verdier i hver kolonne
+bhg.dropna(axis=1, how='all', inplace=True)
+
+# Fjerner irrelevante verdier i hver rad
+bhg.dropna(axis=0, how='all', inplace=True)
+
+# Angi den første kolonnen som indeks (kommune)
+bhg.set_index(bhg.columns[0], inplace=True)
+
+# Erstatt kommaer med dotter for konvertering av desimal
+bhg = bhg.replace(',', '.', regex=True)
+
+# Konverter alle kolonner til numeriske tall, deretter tvinger feil til NaN
+bhg = bhg.apply(lambda x: pd.to_numeric(x, errors='coerce'))
+
+# Filtrere ut urealistiske verdier
+bhg = bhg[bhg <= 100]
+
+# Kalkuler gjennomsnittsprosent til alle kommuner fra 2015-2023
+mean_percentage = bhg.mean(axis=1)
+
+# Finn kommunen med den laveste gjennomsnittsprosent og rund opp til en desimal
+lowest_mean_region = mean_percentage.idxmin()
+lowest_mean_value = round(mean_percentage.min(), 1)
+
+print(f"Kommunen med lavest gjennomsnittlig andel barn i alderen 1-2 år i barnehage fra 2015 til 2023 er {lowest_mean_region} med et gjennomsnitt på {lowest_mean_value:.1f}%.")
+
+'Oppgave 2F'
+
+# Funksjon for å beregne gjennomsnittlig prosentandel for et spesifikt år og runde opp til én desimal
+def average_percentage_for_year(år):
+    if str(år) in bhg.columns:
+        return round(bhg[str(år)].mean(), 1)
+    else:
+        return None
+
+# Test: Finn gjennomsnittlig prosentandel for alle kommuner i 2018
+år = 2018
+average_percentage = average_percentage_for_year(år)
+
+if average_percentage is not None:
+    print(f"Gjennomsnittsprosent av barn i alderen 1-2 år i bhg for alle kommuner i {år} er {average_percentage:.1f}%.")
+else:
+    print(f"År {år} er ikke tilgjengelig i data.")
+
+'Oppgave 2G'
+
+# Smelt dataframen til et langt format som passer for Altair
+bhg_smeltet = bhg.reset_index().melt(id_vars=bhg.index.name, var_name='År', value_name='Prosent')
+
+# Gi nytt navn til kolonnene for å unngå skjema feil
+bhg_smeltet.columns = ['Kommune', 'År', 'Prosent']
+
+# Lag et histogram ved hjelp av Altair og inkluder forskjellige kommuner
+histogram = alt.Chart(bhg_smeltet).mark_bar().encode(
+    x=alt.X('Prosent', bin=alt.BinParams(maxbins=30), title="Prosentandel av barn i barnehage (1-2 år)"),
+    y=alt.Y('År:N', title="År"),
+    color='Kommune:N',  # Inkluder forskjellige kommuner i histogrammet
+    tooltip=['Kommune:N', 'År:N', 'Prosent:Q']  # Legg til verktøytips for å vise kommune, år og prosent
+).properties(
+    title="Histogram over prosentandel av barn i barnehage (1-2 år) per kommune (2015-2023)"
+).interactive()
+
+'Oppgave 2H'
+
+# Velg de 10 kommunene med høyest gjennomsnittlig prosentandel
+topp_10_regions = mean_percentage.nlargest(10).index
+
+# Filtrer dataframen til å inkludere kun de 10 beste kommunene
+topp_10_bhg = bhg.loc[topp_10_regions]
+
+# Plot gjennomsnittlig prosentandel for hver av de 10 beste kommunene
+plt.figure(figsize=(12, 8))
+topp_10_bhg.mean(axis=1).plot(kind='bar', color='darkblue')
+plt.title('Gjennomsnittlig prosentandel av barn i barnehage (1-2 år) for de 10 kommunene med høyest prosentandel (2015-2023)')
+plt.xlabel('Kommune') # X-akse = kommune
+plt.ylabel('Gjennomsnittlig prosentandel') # Y-akse = gjennomsnittlig prosentandel
+plt.ylim(0, 100)
+plt.xticks(rotation=45, ha='right')  # Roter X-aksen etiketter for bedre lesbarhet
+plt.grid(axis='y')
+plt.show()
